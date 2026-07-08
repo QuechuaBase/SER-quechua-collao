@@ -1,0 +1,22 @@
+# Recommended environment: Python 3.10.
+# Install a CUDA-enabled torch/torchaudio pair first when using an NVIDIA GPU.
+torch>=2.0
+torchaudio>=2.0
+
+# Fairseq 0.12.2 is the format used by the published checkpoint.
+# pip<24.1 may be needed because of old Fairseq dependency metadata.
+fairseq==0.12.2
+omegaconf<2.1
+hydra-core<1.1
+
+huggingface_hub>=0.20
+numpy>=1.23
+soundfile>=0.12
+scipy>=1.9
+tqdm>=4.64
+
+# SER manifests, training, and evaluation
+pandas>=1.5
+openpyxl>=3.1
+scikit-learn>=1.2
+matplotlib>=3.7

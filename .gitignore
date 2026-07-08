@@ -1,0 +1,77 @@
+# Generated model artifacts. Keep only the .gitkeep placeholders.
+artifacts/checkpoints/*
+!artifacts/checkpoints/.gitkeep
+artifacts/encoders/*
+!artifacts/encoders/.gitkeep
+artifacts/embeddings/*
+!artifacts/embeddings/.gitkeep
+artifacts/classifiers/
+artifacts/classifiers_ser_only/
+artifacts/features/
+artifacts/classifiers_egemaps/
+artifacts/results/
+
+# Generic local artifacts
+checkpoints/
+models/
+logs/
+cache/
+.cache/
+tmp/
+temp/
+
+# Local datasets. Keep only top-level placeholders.
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Model weights and serialized tensors
+*.pt
+*.bin
+*.safetensors
+*.npy
+*.npz
+*.joblib
+*.pkl
+
+# Python and local environments
+__pycache__/
+.ipynb_checkpoints/
+*.py[cod]
+.venv/
+venv/
+env/
+.env
+.env.*
+*.local
+
+# Experiment tracking and runs
+wandb/
+runs/
+
+# Private/local configuration
+configs/private/
+private/
+secrets/
+
+# LaTeX auxiliary files. Keep source .tex/.bib and final intentional figures.
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

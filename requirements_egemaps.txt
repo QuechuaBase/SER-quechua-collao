@@ -1,0 +1,9 @@
+opensmile
+scikit-learn
+pandas
+numpy
+tqdm
+soundfile
+openpyxl
+matplotlib
+joblib

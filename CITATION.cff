@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying paper."
+title: "ASR-to-SER Transfer for Quechua Collao Speech Emotion Recognition"
+authors:
+  - family-names: "Joaquin"
+    given-names: "Sanchez"
+  - family-names: "Elwin"
+    given-names: "Huaman"
+  - family-names: "Stefano E."
+    given-names: "Romero"
+  - family-names: "Anna"
+    given-names: "Korhonen"
+version: "0.1.0"
+date-released: "2026-07-08"
+repository-code: "TODO: add public GitHub URL"
