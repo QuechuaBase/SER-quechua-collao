@@ -415,8 +415,8 @@ appropriate license before uploading the repository publicly.
 
 ## Contact
 
-Maintainer: `<name or lab contact>`
+Maintainer: `Joaquin Sanchez`
 
-Email: `<public contact email>`
+Email: `joaquin.sanchezs@pucp.edu.pe`
 
-Repository URL: `<repo-url-after-publication>`
+Repository URL: `https://github.com/QuechuaBase/SER-quechua-collao`
