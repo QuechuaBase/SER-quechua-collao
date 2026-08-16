@@ -412,11 +412,10 @@ public GitHub release.
 
 A public reuse license has not been selected yet. See `LICENSE` and choose an
 appropriate license before uploading the repository publicly.
-
+<!---
 ## Contact
 
 Maintainer: `Joaquin Sanchez`
-
 Email: `joaquin.sanchezs@pucp.edu.pe`
-
 Repository URL: `https://github.com/QuechuaBase/SER-quechua-collao`
+-->
