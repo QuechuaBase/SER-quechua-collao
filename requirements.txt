@@ -10,6 +10,8 @@ omegaconf<2.1
 hydra-core<1.1
 
 huggingface_hub>=0.20
+transformers>=4.40
+safetensors
 numpy>=1.23
 soundfile>=0.12
 scipy>=1.9

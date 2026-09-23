@@ -1,0 +1,10 @@
+emotion,f1,aggregation
+angry,0.654056020371044,aggregated_confusion_matrix
+bored,0.29621698786581013,aggregated_confusion_matrix
+calm,0.4321608040201005,aggregated_confusion_matrix
+excited,0.4323938637174456,aggregated_confusion_matrix
+fear,0.24445411048281862,aggregated_confusion_matrix
+happy,0.4771856495994427,aggregated_confusion_matrix
+neutral,0.34918608362591763,aggregated_confusion_matrix
+sad,0.21476510067114093,aggregated_confusion_matrix
+sleepy,0.23564954682779457,aggregated_confusion_matrix

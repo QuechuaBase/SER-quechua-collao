@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code, please cite the accompanying paper."
-title: "ASR-to-SER Transfer for Quechua Collao Speech Emotion Recognition"
+title: "ASR-to-SER Transfer Learning: Towards Speech Emotion Recognition for Quechua Collao"
 authors:
   - family-names: "Joaquin"
     given-names: "Sanchez"

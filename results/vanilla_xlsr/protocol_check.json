@@ -1,0 +1,147 @@
+{
+  "embeddings_metadata": "artifacts/embeddings/vanilla_xlsr_300m/embeddings_metadata.csv",
+  "folds_dir": "data/processed/folds",
+  "utterances": 12420,
+  "sampled_shapes": [
+    {
+      "utterance_id": "10001",
+      "frames": 95,
+      "dim": 1024
+    },
+    {
+      "utterance_id": "10002",
+      "frames": 360,
+      "dim": 1024
+    },
+    {
+      "utterance_id": "10003",
+      "frames": 451,
+      "dim": 1024
+    },
+    {
+      "utterance_id": "10004",
+      "frames": 277,
+      "dim": 1024
+    },
+    {
+      "utterance_id": "10005",
+      "frames": 202,
+      "dim": 1024
+    },
+    {
+      "utterance_id": "10006",
+      "frames": 387,
+      "dim": 1024
+    },
+    {
+      "utterance_id": "10007",
+      "frames": 99,
+      "dim": 1024
+    },
+    {
+      "utterance_id": "10008",
+      "frames": 314,
+      "dim": 1024
+    }
+  ],
+  "folds": [
+    {
+      "fold": 1,
+      "train_rows": 10350,
+      "valid_rows": 2070,
+      "train_actors": [
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "valid_actors": [
+        "a1"
+      ],
+      "actor_disjoint": true
+    },
+    {
+      "fold": 2,
+      "train_rows": 10350,
+      "valid_rows": 2070,
+      "train_actors": [
+        "a1",
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "valid_actors": [
+        "a2"
+      ],
+      "actor_disjoint": true
+    },
+    {
+      "fold": 3,
+      "train_rows": 10350,
+      "valid_rows": 2070,
+      "train_actors": [
+        "a1",
+        "a2",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "valid_actors": [
+        "a3"
+      ],
+      "actor_disjoint": true
+    },
+    {
+      "fold": 4,
+      "train_rows": 10308,
+      "valid_rows": 2112,
+      "train_actors": [
+        "a1",
+        "a2",
+        "a3",
+        "a5",
+        "a6"
+      ],
+      "valid_actors": [
+        "a4"
+      ],
+      "actor_disjoint": true
+    },
+    {
+      "fold": 5,
+      "train_rows": 10392,
+      "valid_rows": 2028,
+      "train_actors": [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a6"
+      ],
+      "valid_actors": [
+        "a5"
+      ],
+      "actor_disjoint": true
+    },
+    {
+      "fold": 6,
+      "train_rows": 10350,
+      "valid_rows": 2070,
+      "train_actors": [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5"
+      ],
+      "valid_actors": [
+        "a6"
+      ],
+      "actor_disjoint": true
+    }
+  ],
+  "labels_present": true,
+  "actor_leakage_detected": false
+}

@@ -6,6 +6,7 @@ artifacts/encoders/*
 artifacts/embeddings/*
 !artifacts/embeddings/.gitkeep
 artifacts/classifiers/
+artifacts/classifiers*/
 artifacts/classifiers_ser_only/
 artifacts/features/
 artifacts/classifiers_egemaps/
@@ -28,6 +29,11 @@ data/processed/*
 
 # Model weights and serialized tensors
 *.pt
+*.pth
+*.ckpt
+*.wav
+*.flac
+*.mp3
 *.bin
 *.safetensors
 *.npy

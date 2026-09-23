@@ -1,0 +1,49 @@
+{
+  "vanilla_xlsr_frozen": {
+    "encoder_trainable_parameters": 0,
+    "encoder_frozen": true,
+    "embedding_dim": 1024,
+    "pooling": "attentive",
+    "tasks": {
+      "vad_regression": {
+        "total": 394500,
+        "trainable": 394500
+      },
+      "emotion_classification": {
+        "total": 396042,
+        "trainable": 396042
+      }
+    }
+  },
+  "puno_quechua_asr_ser_frozen": {
+    "encoder_trainable_parameters": 0,
+    "encoder_frozen": true,
+    "embedding_dim": 1024,
+    "pooling": "attentive",
+    "tasks": {
+      "vad_regression": {
+        "total": 394500,
+        "trainable": 394500
+      },
+      "emotion_classification": {
+        "total": 396042,
+        "trainable": 396042
+      }
+    }
+  },
+  "ser_only_neural": {
+    "uses_encoder_embeddings": false,
+    "pooling": "attentive",
+    "hidden_dim": 256,
+    "tasks": {
+      "vad_regression": {
+        "total": 604356,
+        "trainable": 604356
+      },
+      "emotion_classification": {
+        "total": 605898,
+        "trainable": 605898
+      }
+    }
+  }
+}

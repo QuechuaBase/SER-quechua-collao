@@ -1,16 +1,52 @@
-# ASR-to-SER Transfer for Quechua Collao Speech Emotion Recognition
+# ASR-to-SER Transfer Learning for Quechua Collao
 
 Research code for experiments accompanying a paper on transferring frozen
 Puno Quechua ASR representations to Quechua Collao speech emotion recognition
 (SER).
 
-The repository supports three reproducible experiment families:
+## Overview
+
+This repository accompanies "ASR-to-SER Transfer Learning: Towards Speech
+Emotion Recognition for Quechua Collao". It evaluates whether a Puno
+Quechua-adapted XLS-R ASR encoder transfers to Quechua Collao SER.
+The frozen vanilla XLS-R control tests gains beyond generic multilingual
+representations. It does not independently separate SSL pretraining, ASR
+supervision, and Puno Quechua-specific adaptation.
+
+## Systems
+
+The repository supports four experiment families:
 
 - ASR encoder + SER: frozen XLS-R/Fairseq ASR encoder features followed by SER
   heads.
 - SER-only log-Mel baseline: neural baseline trained directly on emotional
   speech audio.
 - eGeMAPS baseline: classical acoustic features with scikit-learn models.
+- Vanilla XLS-R 300M frozen: `facebook/wav2vec2-xls-r-300m`, using exactly
+  the same attentive pooling, task heads, six folds, and training settings as
+  ASR-SER. VAD uses a CCC objective; categorical SER uses class-weighted
+  cross-entropy and selects models by macro-F1.
+
+## Main Results
+
+Mean and sample standard deviation over six actor-partition folds:
+
+| System | Mean CCC | Accuracy | Balanced Accuracy | Macro-F1 |
+|---|---|---|---|---|
+| eGeMAPS | 0.467 ± 0.077 | 0.287 ± 0.071 | 0.289 ± 0.074 | 0.244 ± 0.080 |
+| SER-only | 0.533 ± 0.079 | 0.361 ± 0.059 | 0.363 ± 0.062 | 0.317 ± 0.071 |
+| Vanilla XLS-R | 0.619 ± 0.057 | 0.378 ± 0.084 | 0.378 ± 0.087 | 0.344 ± 0.093 |
+| ASR-SER | 0.634 ± 0.091 | 0.449 ± 0.083 | 0.450 ± 0.085 | 0.422 ± 0.097 |
+
+Generic XLS-R substantially improves over eGeMAPS and SER-only. ASR-SER
+further improves mean CCC from 0.619 to 0.634 and macro-F1 from 0.344 to
+0.422 (approximately 2.5% and 22.5% relative gains using unrounded CSV means).
+Vanilla XLS-R is slightly stronger on arousal CCC: 0.673 versus 0.667.
+ASR-SER does not win every metric, and these differences do not establish
+that Puno Quechua adaptation alone caused the improvement.
+
+See [the vanilla reproduction guide](docs/vanilla_xlsr_baseline.md) for
+extraction, validation, six-fold training, summaries, and parameter counting.
 
 The recommended ASR checkpoint is:
 
@@ -206,6 +242,13 @@ python scripts/create_actor_folds.py \
 
 The fold script verifies that train and validation actors are disjoint.
 
+The corpus reports seven recorded individuals. Actress 7 completed/replaced
+the incomplete recording set of actress 5; their recordings form one corpus
+actor partition for this protocol, not one individual. Released metadata uses
+six partitions (`a1` through `a6`), yielding six leave-one-actor-partition-out
+folds. Repeat each single-fold command below for folds 1 through 6 before
+summarizing.
+
 ## ASR Encoder + SER Experiments
 
 Extract frame-level frozen ASR embeddings once and share them across folds:
@@ -373,16 +416,117 @@ python scripts/summarize_egemaps_cv_results.py \
   --output_path results/egemaps_emotion_cv_summary.csv
 ```
 
+## Vanilla XLSR Baseline
+
+Extract Embeddings
+
+Smoke test on a few utterances:
+
+```bash
+python scripts/extract_vanilla_xlsr_embeddings.py \
+  --manifest data/processed/ser_manifest.csv \
+  --output_dir artifacts/embeddings/vanilla_xlsr_300m_smoke \
+  --device auto \
+  --max_duration_seconds 12 \
+  --max_utterances 4 \
+  --revision fdca614bc5b1534b850bccd3fabca0489ea723d7 \
+  --overwrite
+```
+
+Full extraction:
+
+```bash
+python scripts/extract_vanilla_xlsr_embeddings.py \
+  --manifest data/processed/ser_manifest.csv \
+  --output_dir artifacts/embeddings/vanilla_xlsr_300m \
+  --device cuda \
+  --max_duration_seconds 12 \
+  --revision fdca614bc5b1534b850bccd3fabca0489ea723d7
+```
+
+Validate shapes, labels, and actor-disjoint folds:
+
+```bash
+python scripts/check_ser_embedding_protocol.py \
+  --embeddings_metadata artifacts/embeddings/vanilla_xlsr_300m/embeddings_metadata.csv \
+  --folds_dir data/processed/folds \
+  --expected_dim 1024 \
+  --output_path results/vanilla_xlsr/protocol_check.json
+```
+
+Train VAD:
+
+```bash
+for i in 1 2 3 4 5 6; do
+  python scripts/train_ser.py \
+    --task vad_regression \
+    --fold_dir data/processed/folds/fold_${i} \
+    --embeddings_metadata artifacts/embeddings/vanilla_xlsr_300m/embeddings_metadata.csv \
+    --output_dir artifacts/classifiers_vanilla_xlsr/vad/fold_${i} \
+    --pooling attentive \
+    --epochs 50 \
+    --batch_size 16 \
+    --lr 1e-4 \
+    --device cuda
+done
+```
+
+Train Emotion:
+
+```bash
+for i in 1 2 3 4 5 6; do
+  python scripts/train_ser.py \
+    --task emotion_classification \
+    --fold_dir data/processed/folds/fold_${i} \
+    --embeddings_metadata artifacts/embeddings/vanilla_xlsr_300m/embeddings_metadata.csv \
+    --output_dir artifacts/classifiers_vanilla_xlsr/emotion/fold_${i} \
+    --pooling attentive \
+    --epochs 50 \
+    --batch_size 16 \
+    --lr 1e-4 \
+    --device cuda \
+    --use_class_weights
+done
+```
+
+Summaries:
+
+```bash
+python scripts/summarize_cv_results.py \
+  --results_dir artifacts/classifiers_vanilla_xlsr/vad \
+  --task vad_regression \
+  --output_path results/vanilla_xlsr/vad_cv_summary.csv
+  ```
+
+```bash
+python scripts/summarize_cv_results.py \
+  --results_dir artifacts/classifiers_vanilla_xlsr/emotion \
+  --task emotion_classification \
+  --output_path results/vanilla_xlsr/emotion_cv_summary.csv
+```
+
 ## Results and Figures
 
 The `results/` directory contains lightweight aggregate CSV summaries and the
 available final confusion-matrix image. Regenerate those files with the summary
 commands above after rerunning the fold experiments.
 
-Radar plots or additional paper figures should be regenerated from the
-lightweight CSV summaries in `results/`. Add the plotting script to `scripts/`
-and store final publication figures in `figures/` if they are needed for the
-paper release.
+Existing ASR-SER summaries retain their unprefixed names in `results/`;
+eGeMAPS and SER-only retain their filename prefixes. Vanilla results live in
+`results/vanilla_xlsr/`. Existing results have not been changed.
+
+Regenerate the four-system fold radar plots and aggregated-confusion per-class
+F1 table:
+
+```bash
+python scripts/plot_ser_folds.py --results_dir results --output_dir figures
+python scripts/confusion_per_class.py --input results/vanilla_xlsr/emotion_cv_confusion_matrix.csv --output results/vanilla_xlsr/emotion_per_class.csv
+```
+
+The VAD radar uses mean CCC and the categorical radar uses macro-F1 per fold.
+Per-class scores from the pooled confusion matrix are distinct from
+fold-averaged metrics and must not replace the reported macro-F1.
+No manuscript or workflow-diagram source is included in this repository.
 
 ## Expected Outputs
 
@@ -410,8 +554,8 @@ public GitHub release.
 
 ## License
 
-A public reuse license has not been selected yet. See `LICENSE` and choose an
-appropriate license before uploading the repository publicly.
+Code is provided under the Apache License 2.0; see `LICENSE`.
+Third-party datasets and upstream model weights retain their own terms.
 
 ## Contact
 
