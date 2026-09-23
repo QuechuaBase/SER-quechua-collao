@@ -554,13 +554,12 @@ public GitHub release.
 
 ## License
 
-Code is provided under the Apache License 2.0; see `LICENSE`.
-Third-party datasets and upstream model weights retain their own terms.
+A public reuse license has not been selected yet. See `LICENSE` and choose an
+appropriate license before uploading the repository publicly.
 
 ## Contact
 
 Maintainer: `Joaquin Sanchez`
-
 Email: `joaquin.sanchezs@pucp.edu.pe`
-
 Repository URL: `https://github.com/QuechuaBase/SER-quechua-collao`
+-->
