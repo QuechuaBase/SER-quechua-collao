@@ -1,17 +1,11 @@
 # ASR-to-SER Transfer Learning for Quechua Collao
 
-Research code for experiments accompanying a paper on transferring frozen
-Puno Quechua ASR representations to Quechua Collao speech emotion recognition
-(SER).
+Research code for transferring frozen Puno Quechua ASR representations to Quechua Collao speech emotion recognition (SER).
 
 ## Overview
 
-This repository accompanies "ASR-to-SER Transfer Learning: Towards Speech
-Emotion Recognition for Quechua Collao". It evaluates whether a Puno
-Quechua-adapted XLS-R ASR encoder transfers to Quechua Collao SER.
-The frozen vanilla XLS-R control tests gains beyond generic multilingual
-representations. It does not independently separate SSL pretraining, ASR
-supervision, and Puno Quechua-specific adaptation.
+This repository evaluates whether a Puno Quechua-adapted XLS-R ASR encoder transfers to Quechua Collao SER.
+The frozen vanilla XLS-R control tests gains beyond generic multilingual representations. It does not independently separate SSL pretraining, ASR supervision, and Puno Quechua-specific adaptation.
 
 ## Systems
 
@@ -45,8 +39,8 @@ Vanilla XLS-R is slightly stronger on arousal CCC: 0.673 versus 0.667.
 ASR-SER does not win every metric, and these differences do not establish
 that Puno Quechua adaptation alone caused the improvement.
 
-See [the vanilla reproduction guide](docs/vanilla_xlsr_baseline.md) for
-extraction, validation, six-fold training, summaries, and parameter counting.
+See [Vanilla XLSR Baseline](#vanilla-xlsr-baseline) for extraction,
+validation, six-fold training, and summaries.
 
 The recommended ASR checkpoint is:
 
@@ -76,14 +70,15 @@ requirements_egemaps.txt
 scripts/                  command-line entry points
 src/                      reusable dataset, model, metric, and audio utilities
 resources/qxp_v2/         small Fairseq dictionary required for CTC task loading
-data/                     local data placeholders only
+data/                     local data placeholders and data README only
 artifacts/                local generated artifact placeholders only
 results/                  lightweight result summaries and final aggregate outputs
-docs/                     release notes and audit documentation
+figures/                  fold radar plots
 ```
 
 Generated files under `data/` and `artifacts/` are intentionally ignored by
-Git. Only `.gitkeep` placeholders should be committed there.
+Git. Only `.gitkeep` placeholders and [data/README.md](data/README.md) should
+be committed there.
 
 ## Installation
 
@@ -119,29 +114,31 @@ python -m pip install -r requirements_egemaps.txt
 
 This repository does not distribute private or third-party speech corpora.
 Researchers must obtain all data from the original sources and place them in
-local paths passed through command-line arguments.
+local paths passed through command-line arguments. See
+[data/README.md](data/README.md) for the corpora, the expected layout, the
+actor partitions, and the generated manifest and fold formats.
 
 Expected local layout:
 
 ```text
-data/raw/scs/              Common Voice Scripted Speech for qxp
-data/raw/sps/              Common Voice Spontaneous Speech for qxp
-data/raw/add_data/         out-of-domain ASR data, if available
-data/raw/silver/           silver transcription tables, if available
-data/raw/quechua_collao_corpus/
-data/processed/manifests/
-data/processed/folds/
+data/raw/quechua_collao_corpus/   Quechua Collao emotional corpus (required)
+data/raw/scs/                     Common Voice Scripted Speech for qxp (optional)
+data/raw/sps/                     Common Voice Spontaneous Speech for qxp (optional)
+data/raw/add_data/                out-of-domain ASR data (optional)
+data/raw/silver/                  silver transcription tables (optional)
+data/processed/                   SER manifest and folds
+data/processed/manifests/         ASR manifests (optional)
 ```
 
-The paper used Common Voice Scripted Speech 25.0 (`SCS-25`), Common Voice
-Spontaneous Speech 3.0 (`SPS-3`), `Add_data` of approximately 0.27 hours, and
-silver spontaneous transcriptions for the V+S ASR condition. If those exact
-Mozilla versions are no longer available, use Scripted Speech 26.0 and
-Spontaneous Speech 4.0 as operational substitutes and report the difference.
+The SER experiments need only the Quechua Collao emotional corpus. Pass its
+local root with `--corpus_root`; do not hardcode machine-specific paths.
 
-The Quechua Collao emotional corpus must be obtained from its original source.
-Pass its local root with `--corpus_root`; do not hardcode machine-specific
-paths.
+The ASR encoder comes from the first evaluation round, which used Common Voice
+Scripted Speech 25.0 (`SCS-25`), Common Voice Spontaneous Speech 3.0 (`SPS-3`),
+`Add_data` of approximately 0.27 hours, and silver spontaneous transcriptions.
+If those exact Mozilla versions are no longer available, use Scripted Speech
+26.0 and Spontaneous Speech 4.0 as operational substitutes and report the
+difference.
 
 ## Smoke Test
 
@@ -160,31 +157,6 @@ python scripts/train_ser.py --help
 python scripts/train_ser_only.py --help
 python scripts/train_egemaps_baseline.py --help
 ```
-
-## Prepare ASR Manifests
-
-Create local data directories:
-
-```bash
-python scripts/prepare_dataset_dirs.py --data_root data
-```
-
-Inspect an extracted Mozilla/Common Voice directory:
-
-```bash
-python scripts/inspect_mozilla_dataset.py \
-  --dataset_dir data/raw/scs
-```
-
-Prepare normalized ASR manifests:
-
-```bash
-python scripts/prepare_qxp_manifests.py \
-  --dataset_dir data/raw/scs data/raw/sps data/raw/add_data data/raw/silver \
-  --output_dir data/processed/manifests
-```
-
-These scripts do not download datasets or convert audio.
 
 ## ASR Checkpoint and Encoder Export
 
@@ -505,6 +477,35 @@ python scripts/summarize_cv_results.py \
   --output_path results/vanilla_xlsr/emotion_cv_summary.csv
 ```
 
+## Optional: Prepare Puno Quechua ASR Manifests
+
+These steps are not needed for the SER experiments, which use the public ASR
+checkpoint. Use them only to inspect or rebuild the Puno Quechua ASR data; see
+[data/README.md](data/README.md#3-puno-quechua-common-voice-data-optional).
+
+Create local data directories:
+
+```bash
+python scripts/prepare_dataset_dirs.py --data_root data
+```
+
+Inspect an extracted Mozilla/Common Voice directory:
+
+```bash
+python scripts/inspect_mozilla_dataset.py \
+  --dataset_dir data/raw/scs
+```
+
+Prepare normalized ASR manifests:
+
+```bash
+python scripts/prepare_qxp_manifests.py \
+  --dataset_dir data/raw/scs data/raw/sps data/raw/add_data data/raw/silver \
+  --output_dir data/processed/manifests
+```
+
+These scripts do not download datasets or convert audio.
+
 ## Results and Figures
 
 The `results/` directory contains lightweight aggregate CSV summaries and the
@@ -526,7 +527,6 @@ python scripts/confusion_per_class.py --input results/vanilla_xlsr/emotion_cv_co
 The VAD radar uses mean CCC and the categorical radar uses macro-F1 per fold.
 Per-class scores from the pooled confusion matrix are distinct from
 fold-averaged metrics and must not replace the reported macro-F1.
-No manuscript or workflow-diagram source is included in this repository.
 
 ## Expected Outputs
 
@@ -535,31 +535,18 @@ Local generated outputs include:
 ```text
 artifacts/checkpoints/                  downloaded ASR checkpoints
 artifacts/encoders/                     exported ASR encoder files
-artifacts/embeddings/                   frozen ASR frame-level embeddings
+artifacts/embeddings/                   frozen ASR and vanilla XLS-R frame-level embeddings
 artifacts/classifiers/                  ASR encoder + SER models and logs
+artifacts/classifiers_vanilla_xlsr/     vanilla XLS-R + SER models and logs
 artifacts/classifiers_ser_only/         log-Mel SER baseline models and logs
 artifacts/features/                     eGeMAPS features
 artifacts/classifiers_egemaps/          eGeMAPS models and logs
-results/                               lightweight aggregate summaries
+results/                                lightweight aggregate summaries
+results/vanilla_xlsr/                   vanilla XLS-R summaries and protocol check
 ```
-
-Do not commit checkpoints, embeddings, features, trained models, raw data, or
-private corpus files.
-
-## Citation
-
-If you use this code, cite the accompanying paper. The repository includes
-`CITATION.cff` with placeholder metadata that should be completed before the
-public GitHub release.
 
 ## License
 
-A public reuse license has not been selected yet. See `LICENSE` and choose an
-appropriate license before uploading the repository publicly.
-
-## Contact
-
-Maintainer: `Joaquin Sanchez`
-Email: `joaquin.sanchezs@pucp.edu.pe`
-Repository URL: `https://github.com/QuechuaBase/SER-quechua-collao`
--->
+The code in this repository is released under the Apache License 2.0. See
+[LICENSE](LICENSE). Datasets and model checkpoints are not covered by this
+licence and keep the terms of their original sources.
